@@ -8,14 +8,18 @@ export default function LoginPage() {
     <>
       <nav className="fixed top-0 w-full z-50 bg-slate-950/60 backdrop-blur-xl shadow-[0_4px_24px_rgba(133,173,255,0.04)]">
         <div className="flex justify-between items-center h-16 px-8 w-full max-w-screen-2xl mx-auto">
-          <Link href="/" className="text-2xl font-black tracking-tighter text-slate-100 uppercase font-headline">
-            COINEXA
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight" href="/market">Market</Link>
-            <Link className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight" href="/dashboard">Dashboard</Link>
-            <div className="bg-gradient-to-r from-blue-500/10 to-transparent h-[1px] w-full absolute bottom-0"></div>
+          <div className="flex items-center gap-8">
+            <Link href="/" className="text-2xl font-black tracking-tighter text-slate-100 uppercase font-headline">COINEXA</Link>
+            <nav className="hidden md:flex gap-6 items-center">
+              <Link className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight" href="/market">Market</Link>
+              <Link className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight" href="/dashboard">Dashboard</Link>
+            </nav>
           </div>
+          <div className="flex items-center gap-4">
+            <Link href="/login" className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors active:scale-95">Login</Link>
+            <Link href="/register" className="px-6 py-2 bg-primary text-on-primary-container font-bold rounded-lg hover:bg-primary-fixed transition-all active:scale-95">Get Started</Link>
+          </div>
+          <div className="bg-gradient-to-r from-blue-500/10 to-transparent h-[1px] w-full absolute bottom-0"></div>
         </div>
       </nav>
 

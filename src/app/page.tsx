@@ -8,10 +8,12 @@ export default function Home() {
       {/* TopNavBar */}
       <nav className="fixed top-0 w-full z-50 bg-slate-950/60 backdrop-blur-xl shadow-[0_4px_24px_rgba(133,173,255,0.04)]">
         <div className="flex justify-between items-center h-16 px-8 w-full max-w-screen-2xl mx-auto">
-          <div className="text-2xl font-black tracking-tighter text-slate-100 uppercase font-headline">COINEXA</div>
-          <div className="hidden md:flex items-center space-gap-8 gap-8">
-            <Link className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight" href="/market">Market</Link>
-            <Link className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight" href="/dashboard">Dashboard</Link>
+          <div className="flex items-center gap-8">
+            <Link href="/" className="text-2xl font-black tracking-tighter text-slate-100 uppercase font-headline">COINEXA</Link>
+            <nav className="hidden md:flex gap-6 items-center">
+              <Link className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight" href="/market">Market</Link>
+              <Link className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight" href="/dashboard">Dashboard</Link>
+            </nav>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/login" className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight text-sm px-4 py-2">Login</Link>
@@ -78,10 +80,22 @@ export default function Home() {
               <Link href="/market" className="bg-surface-container-high text-on-surface border border-outline-variant px-8 py-4 rounded-lg font-bold font-headline text-lg hover:bg-surface-bright transition-all active:scale-95">View Market</Link>
             </div>
             
-            <div className="mt-20 w-full max-w-5xl rounded-xl overflow-hidden glass-panel p-2 transform perspective-1000 rotate-x-6 rotate-y--12 shadow-[0_0_50px_rgba(133,173,255,0.2)] hover:rotate-0 transition-transform duration-700 ease-out flex justify-center">
+            {/* Subtle Divider */}
+            <div className="w-full max-w-6xl h-px bg-gradient-to-r from-transparent via-outline-variant/30 to-transparent my-24"></div>
+            
+            <div className="text-center max-w-3xl mx-auto mb-12">
+              <h2 className="font-headline text-4xl md:text-5xl font-extrabold tracking-tight text-on-surface mb-4">
+                Real Markets. Virtual Capital.
+              </h2>
+              <p className="text-on-surface-variant text-lg md:text-xl font-body">
+                Step into a high-fidelity institutional trading environment. Experience zero-latency data and deep liquidity without risking your actual portfolio.
+              </p>
+            </div>
+
+            <div className="w-full max-w-5xl rounded-xl overflow-hidden glass-panel p-2 transform perspective-1000 rotate-x-6 rotate-y--12 shadow-[0_0_50px_rgba(133,173,255,0.2)] hover:rotate-0 transition-transform duration-700 ease-out flex justify-center">
               <img 
                 alt="Coinexa Terminal Interface" 
-                className="w-full rounded-lg shadow-2xl border border-outline-variant/20 max-w-full" 
+                className="w-full rounded-lg shadow-2xl border border-outline-variant/20 max-w-700" 
                 src="/dashboard-screen.png" 
               />
             </div>
