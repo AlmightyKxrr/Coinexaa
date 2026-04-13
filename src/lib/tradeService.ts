@@ -3,6 +3,9 @@ import { usePortfolioStore } from "@/store/usePortfolioStore";
 
 // ─── Trade Execution Service ───────────────────────────────────────────────────
 
+/** Trading fee rate — 0.15% per trade (industry standard) */
+export const TRADING_FEE_RATE = 0.0015;
+
 interface TradeParams {
   userId: string;
   assetSymbol: string;   // CoinGecko id, e.g. "bitcoin"
@@ -13,20 +16,25 @@ interface TradeParams {
 /**
  * Execute a BUY order.
  *
- * 1. Validates sufficient USD balance.
- * 2. Deducts `total_cost` from `profiles.virtual_balance`.
- * 3. Upserts (increment) the `portfolio` row.
- * 4. Inserts a `transactions` record.
- * 5. Refreshes the Zustand store.
+ * 1. Calculates subtotal + fee.
+ * 2. Validates sufficient USD balance (subtotal + fee).
+ * 3. Deducts total (subtotal + fee) from `profiles.virtual_balance`.
+ * 4. Upserts (increment) the `portfolio` row.
+ * 5. Inserts a `transactions` record with fee info.
+ * 6. Refreshes the Zustand store.
+ *
+ * Returns the fee amount for the caller to display.
  */
-export async function executeBuy({ userId, assetSymbol, amount, currentPrice }: TradeParams): Promise<void> {
-  const totalCost = amount * currentPrice;
+export async function executeBuy({ userId, assetSymbol, amount, currentPrice }: TradeParams): Promise<{ fee: number }> {
+  const subtotal = amount * currentPrice;
+  const fee = subtotal * TRADING_FEE_RATE;
+  const totalCost = subtotal + fee;
 
   // ── 1. Validate balance ───────────────────────────────────────────────────
   const { usdBalance } = usePortfolioStore.getState();
   if (usdBalance < totalCost) {
     throw new Error(
-      `Insufficient balance. You need $${totalCost.toFixed(2)} but only have $${usdBalance.toFixed(2)}.`
+      `Insufficient balance. You need ${formatUSD(totalCost)} (incl. ${formatUSD(fee)} fee) but only have ${formatUSD(usdBalance)}.`
     );
   }
 
@@ -49,7 +57,6 @@ export async function executeBuy({ userId, assetSymbol, amount, currentPrice }: 
   }
 
   // ── 3. Upsert portfolio (increment amount) ────────────────────────────────
-  // Check if holding exists
   const { data: existing } = await supabase
     .from("portfolio")
     .select("id, total_amount")
@@ -79,11 +86,14 @@ export async function executeBuy({ userId, assetSymbol, amount, currentPrice }: 
     amount,
     execution_price: currentPrice,
     total_cost: totalCost,
+    fee,
   });
   if (txError) throw txError;
 
   // ── 5. Refresh store ──────────────────────────────────────────────────────
   await usePortfolioStore.getState().fetchUserPortfolio(userId);
+
+  return { fee };
 }
 
 /**
@@ -91,12 +101,16 @@ export async function executeBuy({ userId, assetSymbol, amount, currentPrice }: 
  *
  * 1. Validates the user holds enough of the asset.
  * 2. Subtracts from the `portfolio` row (or deletes it if fully sold).
- * 3. Credits `profiles.virtual_balance` with the proceeds.
- * 4. Inserts a `transactions` record.
+ * 3. Credits `profiles.virtual_balance` with proceeds MINUS fee.
+ * 4. Inserts a `transactions` record with fee info.
  * 5. Refreshes the Zustand store.
+ *
+ * Returns the fee amount for the caller to display.
  */
-export async function executeSell({ userId, assetSymbol, amount, currentPrice }: TradeParams): Promise<void> {
-  const totalProceeds = amount * currentPrice;
+export async function executeSell({ userId, assetSymbol, amount, currentPrice }: TradeParams): Promise<{ fee: number }> {
+  const subtotal = amount * currentPrice;
+  const fee = subtotal * TRADING_FEE_RATE;
+  const totalProceeds = subtotal - fee;
 
   // ── 1. Validate holdings ──────────────────────────────────────────────────
   const { assets } = usePortfolioStore.getState();
@@ -113,7 +127,6 @@ export async function executeSell({ userId, assetSymbol, amount, currentPrice }:
   const remainingAmount = heldAmount - amount;
 
   if (remainingAmount <= 0) {
-    // Fully sold — remove row
     const { error: deleteError } = await supabase
       .from("portfolio")
       .delete()
@@ -129,7 +142,7 @@ export async function executeSell({ userId, assetSymbol, amount, currentPrice }:
     if (updateError) throw updateError;
   }
 
-  // ── 3. Credit balance ─────────────────────────────────────────────────────
+  // ── 3. Credit balance (proceeds minus fee) ────────────────────────────────
   const { usdBalance } = usePortfolioStore.getState();
   const newBalance = usdBalance + totalProceeds;
 
@@ -147,9 +160,18 @@ export async function executeSell({ userId, assetSymbol, amount, currentPrice }:
     amount,
     execution_price: currentPrice,
     total_cost: totalProceeds,
+    fee,
   });
   if (txError) throw txError;
 
   // ── 5. Refresh store ──────────────────────────────────────────────────────
   await usePortfolioStore.getState().fetchUserPortfolio(userId);
+
+  return { fee };
+}
+
+// ─── Helper ─────────────────────────────────────────────────────────────────────
+
+function formatUSD(n: number): string {
+  return n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 });
 }

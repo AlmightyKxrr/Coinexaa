@@ -117,7 +117,7 @@ export default function Home() {
 
       <main className="relative">
         {/* Hero Section */}
-        <section className="relative pt-24 pb-10 px-8 overflow-hidden">
+        <section className="relative min-h-[calc(100vh-5rem)] flex items-center px-6 md:px-8 overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-6xl pointer-events-none opacity-20">
             <motion.div 
               initial={{ scale: 0, opacity: 0 }}
@@ -132,7 +132,7 @@ export default function Home() {
               className="absolute bottom-20 right-10 w-96 h-96 bg-secondary blur-[120px] rounded-full"
             ></motion.div>
           </div>
-          <div className="max-w-screen-xl mx-auto flex flex-col items-center text-center relative z-10">
+          <div className="max-w-screen-xl mx-auto flex flex-col items-center text-center relative z-10 py-16 md:py-20">
             
             <motion.div 
               variants={containerVariants} 
@@ -140,17 +140,17 @@ export default function Home() {
               animate="show" 
               className="flex flex-col items-center"
             >
-              <motion.span variants={itemVariants} className="px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/30 text-[10px] uppercase tracking-widest text-primary-fixed mb-8 font-label">The Future of Simulated Trading</motion.span>
-              <motion.h1 variants={itemVariants} className="font-headline text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-none text-on-surface mb-6">
+              <motion.span variants={itemVariants} className="px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/30 text-[10px] uppercase tracking-widest text-primary-fixed mb-6 font-label">The Future of Simulated Trading</motion.span>
+              <motion.h1 variants={itemVariants} className="font-headline text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-[0.95] text-on-surface mb-6">
                 Master the Market <br/>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">with Zero Risk</span>
               </motion.h1>
-              <motion.p variants={itemVariants} className="max-w-2xl text-on-surface-variant text-lg md:text-xl font-body mb-10 leading-relaxed">
+              <motion.p variants={itemVariants} className="max-w-2xl text-on-surface-variant text-base md:text-lg font-body mb-8 leading-relaxed">
                 Execute high-velocity crypto trades in a professional-grade terminal using real-time market data. No capital required, just raw strategy.
               </motion.p>
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-4">
-                <Link href="/register" className="bg-secondary text-on-secondary px-8 py-4 rounded-lg font-bold font-headline text-lg hover:brightness-110 transition-all shadow-xl shadow-secondary/10 active:scale-95">Get Started</Link>
-                <Link href="/market" className="bg-surface-container-high text-on-surface border border-outline-variant px-8 py-4 rounded-lg font-bold font-headline text-lg hover:bg-surface-bright transition-all active:scale-95">View Market</Link>
+                <Link href="/register" className="bg-secondary text-on-secondary px-8 py-3.5 rounded-lg font-bold font-headline text-base hover:brightness-110 transition-all shadow-xl shadow-secondary/10 active:scale-95">Get Started</Link>
+                <Link href="/market" className="bg-surface-container-high text-on-surface border border-outline-variant px-8 py-3.5 rounded-lg font-bold font-headline text-base hover:bg-surface-bright transition-all active:scale-95">View Market</Link>
               </motion.div>
             </motion.div>
             
@@ -160,7 +160,7 @@ export default function Home() {
               whileInView={{ scaleX: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.8, duration: 1 }}
-              className="w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-outline-variant/30 to-transparent my-24 origin-center"
+              className="w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-outline-variant/30 to-transparent my-16 origin-center"
             ></motion.div>
             
             <motion.div 
@@ -168,12 +168,12 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.7 }}
-              className="text-center max-w-3xl mx-auto mb-12"
+              className="text-center max-w-3xl mx-auto mb-10"
             >
-              <h2 className="font-headline text-4xl md:text-5xl font-extrabold tracking-tight text-on-surface mb-4">
+              <h2 className="font-headline text-3xl md:text-4xl font-extrabold tracking-tight text-on-surface mb-3">
                 Real Markets. Virtual Capital.
               </h2>
-              <p className="text-on-surface-variant text-lg md:text-xl font-body">
+              <p className="text-on-surface-variant text-base md:text-lg font-body">
                 Step into a high-fidelity institutional trading environment. Experience zero-latency data and deep liquidity without risking your actual portfolio.
               </p>
             </motion.div>
@@ -183,11 +183,11 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0, rotateX: 6 }}
               viewport={{ once: true }}
               transition={{ duration: 1, type: "spring", bounce: 0.3 }}
-              className="w-full max-w-5xl rounded-xl overflow-hidden glass-panel p-2 transform perspective-1000 rotate-y--12 shadow-[0_0_50px_rgba(133,173,255,0.2)] hover:rotate-x-0 transition-transform duration-700 ease-out flex justify-center"
+              className="w-full max-w-5xl rounded-xl overflow-hidden glass-panel p-2 transform perspective-1000 shadow-[0_0_50px_rgba(133,173,255,0.2)] hover:shadow-[0_0_60px_rgba(133,173,255,0.3)] transition-shadow duration-700 ease-out flex justify-center mb-8"
             >
               <img 
                 alt="Coinexa Terminal Interface" 
-                className="w-full rounded-lg shadow-2xl border border-outline-variant/20 max-w-full" 
+                className="w-full rounded-lg shadow-2xl border border-outline-variant/20 max-w-450" 
                 src="/dashboard-screen.png" 
               />
             </motion.div>
@@ -195,7 +195,7 @@ export default function Home() {
         </section>
 
         {/* Bento Grid Features */}
-        <section className="py-24 px-8 bg-surface-container-low">
+        <section className="py-20 md:py-28 px-6 md:px-8 bg-surface-container-low">
           <div className="max-w-screen-xl mx-auto">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -212,7 +212,7 @@ export default function Home() {
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, margin: "-100px" }}
-              className="grid grid-cols-1 md:grid-cols-6 grid-rows-2 gap-4 h-auto md:h-[600px]"
+              className="grid grid-cols-1 md:grid-cols-6 auto-rows-auto gap-4"
             >
               
               {/* Large Feature: Real-time Data */}
@@ -298,25 +298,25 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-32 px-8 relative overflow-hidden">
+        <section className="py-20 md:py-28 px-6 md:px-8 relative overflow-hidden">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="max-w-screen-xl mx-auto rounded-2xl bg-gradient-to-br from-surface-container-highest to-surface-container-lowest p-12 md:p-24 border border-outline-variant/20 text-center relative z-10 overflow-hidden"
+            className="max-w-screen-xl mx-auto rounded-2xl bg-gradient-to-br from-surface-container-highest to-surface-container-lowest p-10 md:p-16 lg:p-20 border border-outline-variant/20 text-center relative z-10 overflow-hidden"
           >
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-secondary/10 blur-[80px] rounded-full"></div>
-            <h2 className="font-headline text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">Ready to Command the Terminal?</h2>
-            <p className="text-on-surface-variant text-lg mb-12 max-w-xl mx-auto font-body">Join over 50,000 traders refining their strategies daily. Zero commitments, infinite possibilities.</p>
-            <Link href="/register" className="inline-block bg-primary text-on-primary px-10 py-5 rounded-lg font-bold font-headline text-xl hover:scale-105 transition-all shadow-xl shadow-primary/20 active:scale-95">Open Free Account</Link>
+            <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight">Ready to Command the Terminal?</h2>
+            <p className="text-on-surface-variant text-base md:text-lg mb-10 max-w-xl mx-auto font-body">Join over 50,000 traders refining their strategies daily. Zero commitments, infinite possibilities.</p>
+            <Link href="/register" className="inline-block bg-primary text-on-primary px-10 py-4 rounded-lg font-bold font-headline text-lg hover:scale-105 transition-all shadow-xl shadow-primary/20 active:scale-95">Open Free Account</Link>
           </motion.div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="w-full py-4 border-t border-slate-800/30 bg-black">
-        <div className="flex justify-between items-center px-8 w-full max-w-screen-2xl mx-auto">
+      <footer className="w-full py-5 border-t border-slate-800/30 bg-black">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 px-6 md:px-8 w-full max-w-screen-2xl mx-auto">
           <div className="text-sm font-bold text-slate-500 font-['Inter']">COINEXA TERMINAL</div>
           <div className="flex gap-6">
             <a className="text-slate-600 hover:text-slate-300 font-['Inter'] text-[10px] uppercase tracking-widest transition-colors" href="#">Terms</a>

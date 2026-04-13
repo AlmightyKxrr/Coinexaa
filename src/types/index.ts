@@ -41,6 +41,7 @@ export interface Transaction {
   amount: number;
   execution_price: number;
   total_cost: number;
+  fee?: number;
   created_at: string;
 }
 

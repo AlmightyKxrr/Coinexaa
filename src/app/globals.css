@@ -115,3 +115,29 @@
     animation: marquee 20s linear infinite;
   }
 }
+
+/* Range slider thumb styling */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-on-surface);
+  border: 2px solid var(--color-surface-container-highest);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(133, 173, 255, 0.3);
+  transition: transform 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-on-surface);
+  border: 2px solid var(--color-surface-container-highest);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(133, 173, 255, 0.3);
+}
