@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import dynamic from "next/dynamic";
+import TrueFocus from "@/components/effects/TrueFocus";
 
 const LiquidEther = dynamic(() => import("@/components/effects/LiquidEther"), { ssr: false });
 
@@ -174,7 +175,18 @@ export default function Home() {
             >
               <span className="px-4 py-1.5 rounded-full bg-surface-container border border-outline-variant/30 text-[10px] uppercase tracking-widest text-secondary mb-6 font-label w-max">Trading Terminal</span>
               <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-on-surface mb-4 leading-tight">
-                Real Markets.<br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-dim">Virtual Capital.</span>
+                Real Markets.<br/> 
+                <span className="text-primary inline-block mt-2">
+                  <TrueFocus 
+                    sentence="Virtual Capital."
+                    manualMode={false}
+                    blurAmount={4}
+                    borderColor="#85adff"
+                    glowColor="rgba(133, 173, 255, 0.4)"
+                    animationDuration={0.8}
+                    pauseBetweenAnimations={1.5}
+                  />
+                </span>
               </h2>
               <p className="text-on-surface-variant text-base md:text-lg font-body mb-8 max-w-lg">
                 Step into a high-fidelity institutional trading environment. Experience zero-latency data and deep liquidity without risking your actual portfolio.
