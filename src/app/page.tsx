@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
+import dynamic from "next/dynamic";
+
+const LiquidEther = dynamic(() => import("@/components/effects/LiquidEther"), { ssr: false });
 
 // ─── Live Ticker (fetches from /api/coins, loops infinitely) ────────────────
 
@@ -117,22 +120,23 @@ export default function Home() {
 
       <main className="relative">
         {/* Hero Section */}
-        <section className="relative min-h-[calc(100vh-5rem)] flex items-center px-6 md:px-8 overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-6xl pointer-events-none opacity-20">
-            <motion.div 
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-              className="absolute top-20 left-10 w-96 h-96 bg-primary blur-[120px] rounded-full"
-            ></motion.div>
-            <motion.div 
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1.5, ease: "easeOut", delay: 0.3 }}
-              className="absolute bottom-20 right-10 w-96 h-96 bg-secondary blur-[120px] rounded-full"
-            ></motion.div>
+        <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-6 md:px-8 overflow-hidden">
+          {/* LiquidEther fluid background */}
+          <div className="absolute inset-0 z-0 opacity-40 pointer-events-auto">
+            <LiquidEther
+              colors={['#1a3a6e', '#85adff', '#69f6b8', '#2a5298']}
+              mouseForce={15}
+              cursorSize={120}
+              resolution={0.4}
+              autoDemo={true}
+              autoSpeed={0.3}
+              autoIntensity={1.8}
+              takeoverDuration={0.3}
+              autoResumeDelay={2000}
+              autoRampDuration={0.8}
+            />
           </div>
-          <div className="max-w-screen-xl mx-auto flex flex-col items-center text-center relative z-10 py-16 md:py-20">
+          <div className="max-w-screen-xl mx-auto flex flex-col items-center text-center relative z-10 -mt-6 md:-mt-10">
             
             <motion.div 
               variants={containerVariants} 
@@ -153,20 +157,21 @@ export default function Home() {
                 <Link href="/market" className="bg-surface-container-high text-on-surface border border-outline-variant px-8 py-3.5 rounded-lg font-bold font-headline text-base hover:bg-surface-bright transition-all active:scale-95">View Market</Link>
               </motion.div>
             </motion.div>
-            
-            {/* Subtle Divider */}
-            <motion.div 
-              initial={{ scaleX: 0, opacity: 0 }}
-              whileInView={{ scaleX: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.8, duration: 1 }}
-              className="w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-outline-variant/30 to-transparent my-16 origin-center"
-            ></motion.div>
-            
+          </div>
+        </section>
+
+        {/* Divider */}
+        <div className="flex justify-center px-8 mt-4">
+          <div className="w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-outline-variant/30 to-transparent"></div>
+        </div>
+
+        {/* Screenshot Section */}
+        <section className="py-12 md:py-16 px-6 md:px-8 overflow-hidden">
+          <div className="max-w-screen-xl mx-auto flex flex-col items-center text-center">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.7 }}
               className="text-center max-w-3xl mx-auto mb-10"
             >
@@ -179,15 +184,15 @@ export default function Home() {
             </motion.div>
 
             <motion.div 
-              initial={{ opacity: 0, y: 50, rotateX: 20 }}
-              whileInView={{ opacity: 1, y: 0, rotateX: 6 }}
+              initial={{ opacity: 0, y: 40, rotateX: 15 }}
+              whileInView={{ opacity: 1, y: 0, rotateX: 4 }}
               viewport={{ once: true }}
               transition={{ duration: 1, type: "spring", bounce: 0.3 }}
-              className="w-full max-w-5xl rounded-xl overflow-hidden glass-panel p-2 transform perspective-1000 shadow-[0_0_50px_rgba(133,173,255,0.2)] hover:shadow-[0_0_60px_rgba(133,173,255,0.3)] transition-shadow duration-700 ease-out flex justify-center mb-8"
+              className="w-full max-w-3xl rounded-xl overflow-hidden glass-panel p-1.5 transform perspective-1000 shadow-[0_0_40px_rgba(133,173,255,0.15)] hover:shadow-[0_0_50px_rgba(133,173,255,0.25)] transition-shadow duration-700 ease-out flex justify-center"
             >
               <img 
                 alt="Coinexa Terminal Interface" 
-                className="w-full rounded-lg shadow-2xl border border-outline-variant/20 max-w-450" 
+                className="w-full rounded-lg shadow-2xl border border-outline-variant/20" 
                 src="/dashboard-screen.png" 
               />
             </motion.div>
@@ -195,13 +200,13 @@ export default function Home() {
         </section>
 
         {/* Bento Grid Features */}
-        <section className="py-20 md:py-28 px-6 md:px-8 bg-surface-container-low">
+        <section className="py-14 md:py-20 px-6 md:px-8 bg-surface-container-low">
           <div className="max-w-screen-xl mx-auto">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mb-16 text-center"
+              className="mb-10 text-center"
             >
               <h2 className="font-headline text-4xl font-bold tracking-tight text-on-surface mb-4">Engineered for Precision</h2>
               <p className="text-on-surface-variant">Professional tools for the modern digital asset trader.</p>
@@ -298,13 +303,13 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 md:py-28 px-6 md:px-8 relative overflow-hidden">
+        <section className="py-14 md:py-20 px-6 md:px-8 relative overflow-hidden">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="max-w-screen-xl mx-auto rounded-2xl bg-gradient-to-br from-surface-container-highest to-surface-container-lowest p-10 md:p-16 lg:p-20 border border-outline-variant/20 text-center relative z-10 overflow-hidden"
+            className="max-w-screen-xl mx-auto rounded-2xl bg-gradient-to-br from-surface-container-highest to-surface-container-lowest p-8 md:p-12 lg:p-16 border border-outline-variant/20 text-center relative z-10 overflow-hidden"
           >
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-secondary/10 blur-[80px] rounded-full"></div>
             <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight">Ready to Command the Terminal?</h2>
