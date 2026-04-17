@@ -160,80 +160,157 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Divider */}
-        <div className="flex justify-center px-8 mt-4">
-          <div className="w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-outline-variant/30 to-transparent"></div>
-        </div>
-
-        {/* Screenshot Section */}
-        <section className="py-12 md:py-16 px-6 md:px-8 overflow-hidden">
-          <div className="max-w-screen-xl mx-auto flex flex-col items-center text-center">
+        {/* Split Layout — Terminal Showcase */}
+        <section className="py-16 md:py-24 px-6 md:px-8 overflow-hidden">
+          <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+            
+            {/* Left Content: Text & Features */}
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.7 }}
-              className="text-center max-w-3xl mx-auto mb-10"
+              className="flex flex-col text-left"
             >
-              <h2 className="font-headline text-3xl md:text-4xl font-extrabold tracking-tight text-on-surface mb-3">
-                Real Markets. Virtual Capital.
+              <span className="px-4 py-1.5 rounded-full bg-surface-container border border-outline-variant/30 text-[10px] uppercase tracking-widest text-secondary mb-6 font-label w-max">Trading Terminal</span>
+              <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-on-surface mb-4 leading-tight">
+                Real Markets.<br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-dim">Virtual Capital.</span>
               </h2>
-              <p className="text-on-surface-variant text-base md:text-lg font-body">
+              <p className="text-on-surface-variant text-base md:text-lg font-body mb-8 max-w-lg">
                 Step into a high-fidelity institutional trading environment. Experience zero-latency data and deep liquidity without risking your actual portfolio.
               </p>
+
+              <div className="flex flex-col gap-5">
+                {/* Feature 1 */}
+                <div className="flex gap-5 group cursor-default">
+                  <div className="w-10 h-10 shrink-0 rounded-lg bg-surface-container-high border border-outline-variant/30 group-hover:bg-primary/10 group-hover:border-primary/30 transition-colors duration-300 text-primary flex items-center justify-center">
+                    <span className="material-symbols-outlined">bolt</span>
+                  </div>
+                  <div>
+                    <h4 className="text-on-surface font-bold text-base mb-0.5 font-headline">Zero-Latency Execution</h4>
+                    <p className="text-on-surface-variant text-sm leading-relaxed">Execute simulated orders flawlessly using real-time market data matching.</p>
+                  </div>
+                </div>
+
+                {/* Feature 2 */}
+                <div className="flex gap-5 group cursor-default">
+                  <div className="w-10 h-10 shrink-0 rounded-lg bg-surface-container-high border border-outline-variant/30 group-hover:bg-secondary/10 group-hover:border-secondary/30 transition-colors duration-300 text-secondary flex items-center justify-center">
+                    <span className="material-symbols-outlined">monitoring</span>
+                  </div>
+                  <div>
+                    <h4 className="text-on-surface font-bold text-base mb-0.5 font-headline">Advanced P&L Metrics</h4>
+                    <p className="text-on-surface-variant text-sm leading-relaxed">Track your unrealized and realized returns instantly as prices fluctuate.</p>
+                  </div>
+                </div>
+
+                {/* Feature 3 */}
+                <div className="flex gap-5 group cursor-default">
+                  <div className="w-10 h-10 shrink-0 rounded-lg bg-surface-container-high border border-outline-variant/30 group-hover:bg-tertiary/10 group-hover:border-tertiary/30 transition-colors duration-300 text-tertiary flex items-center justify-center">
+                    <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>security</span>
+                  </div>
+                  <div>
+                    <h4 className="text-on-surface font-bold text-base mb-0.5 font-headline">Absolute Zero Risk</h4>
+                    <p className="text-on-surface-variant text-sm leading-relaxed">Refine your trading edge without ever risking your real-world capital.</p>
+                  </div>
+                </div>
+              </div>
             </motion.div>
 
+            {/* Right Content: Media/Screenshot */}
             <motion.div 
-              initial={{ opacity: 0, y: 40, rotateX: 15 }}
-              whileInView={{ opacity: 1, y: 0, rotateX: 4 }}
+              initial={{ opacity: 0, x: 30, rotateY: 15 }}
+              whileInView={{ opacity: 1, x: 0, rotateY: -8 }}
               viewport={{ once: true }}
               transition={{ duration: 1, type: "spring", bounce: 0.3 }}
-              className="w-full max-w-3xl rounded-xl overflow-hidden glass-panel p-1.5 transform perspective-1000 shadow-[0_0_40px_rgba(133,173,255,0.15)] hover:shadow-[0_0_50px_rgba(133,173,255,0.25)] transition-shadow duration-700 ease-out flex justify-center"
+              className="w-full relative transform perspective-1000 mt-10 lg:mt-0"
             >
-              <img 
-                alt="Coinexa Terminal Interface" 
-                className="w-full rounded-lg shadow-2xl border border-outline-variant/20" 
-                src="/dashboard-screen.png" 
-              />
+              {/* Background glow behind image */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+              
+              {/* Image Container */}
+              <div className="w-fit mx-auto rounded-2xl overflow-hidden glass-panel p-2 shadow-[0_0_60px_rgba(133,173,255,0.15)] border border-outline-variant/30 hover:border-primary/40 transition-colors duration-700 relative z-10 bg-surface-dim">
+                <div className="absolute inset-0 bg-gradient-to-tr from-surface-dim/40 to-transparent z-10 pointer-events-none" />
+                <img 
+                  alt="Coinexa Terminal Interface" 
+                  className="w-auto h-auto max-w-full max-h-[400px] md:max-h-[500px] lg:max-h-[600px] object-contain rounded-xl shadow-2xl relative z-0" 
+                  src="/dashboard-screen.png" 
+                />
+              </div>
+
+              {/* Decorative floating mock-notification */}
+              <motion.div 
+                animate={{ y: [0, -12, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-6 bg-surface-container-highest border border-outline-variant/40 rounded-xl p-3 shadow-2xl hidden sm:flex items-center gap-3 z-20"
+              >
+                <div className="w-10 h-10 rounded-full bg-secondary/15 text-secondary flex items-center justify-center border border-secondary/20">
+                  <span className="material-symbols-outlined text-[18px]">check</span>
+                </div>
+                <div>
+                  <div className="text-[10px] text-on-surface-variant font-label uppercase tracking-[0.15em] mb-1">Order Filled</div>
+                  <div className="text-sm font-bold text-on-surface flex items-center gap-2">
+                    Bought 0.75 BTC <span className="text-secondary text-xs">@ $64,210</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Decorative floating mock-notification 2 */}
+              <motion.div 
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className="absolute -top-3 -right-3 md:-top-5 md:-right-5 bg-surface-container-highest border border-outline-variant/40 rounded-xl p-3 shadow-2xl hidden md:flex items-center gap-3 z-20"
+              >
+                <div className="w-10 h-10 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center border border-tertiary/20">
+                  <span className="material-symbols-outlined text-[18px]">show_chart</span>
+                </div>
+                <div>
+                  <div className="text-[10px] text-on-surface-variant font-label uppercase tracking-[0.15em] mb-1">Profit Alert</div>
+                  <div className="text-sm font-bold text-on-surface flex items-center gap-2">
+                    SOL/USD <span className="text-secondary text-xs">+8.4%</span>
+                  </div>
+                </div>
+              </motion.div>
+
             </motion.div>
+
           </div>
         </section>
 
         {/* Bento Grid Features */}
-        <section className="py-14 md:py-20 px-6 md:px-8 bg-surface-container-low">
+        <section className="py-16 md:py-24 px-6 md:px-8 bg-surface-container-low">
           <div className="max-w-screen-xl mx-auto">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mb-10 text-center"
+              className="mb-8 text-center"
             >
-              <h2 className="font-headline text-4xl font-bold tracking-tight text-on-surface mb-4">Engineered for Precision</h2>
-              <p className="text-on-surface-variant">Professional tools for the modern digital asset trader.</p>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-3">Engineered for Precision</h2>
+              <p className="text-on-surface-variant text-base">Professional tools for the modern digital asset trader.</p>
             </motion.div>
             
             <motion.div 
               variants={containerVariants}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: true, margin: "-100px" }}
-              className="grid grid-cols-1 md:grid-cols-6 auto-rows-auto gap-4"
+              viewport={{ once: true, margin: "-50px" }}
+              className="grid grid-cols-1 md:grid-cols-6 auto-rows-auto gap-3"
             >
               
               {/* Large Feature: Real-time Data */}
               <motion.div 
                 variants={bentoVariants}
                 whileHover={{ scale: 1.02 }}
-                className="md:col-span-4 md:row-span-1 glass-panel rounded-xl p-8 flex flex-col justify-between kinetic-gradient hover:bg-surface-bright transition-colors cursor-default relative overflow-hidden"
+                className="md:col-span-4 md:row-span-1 glass-panel rounded-xl p-6 flex flex-col justify-between kinetic-gradient hover:bg-surface-bright transition-colors cursor-default relative overflow-hidden"
               >
                 <div className="relative z-10">
-                  <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary mb-4">
                     <span className="material-symbols-outlined">bolt</span>
                   </div>
                   <h3 className="font-headline text-2xl font-bold text-on-surface mb-3">Real-time Data (CoinGecko)</h3>
                   <p className="text-on-surface-variant max-w-md">Streaming sub-second latency data for thousands of pairs. Never miss a pivot point with institutional-grade feeds.</p>
                 </div>
-                <div className="mt-8 flex items-center gap-2 overflow-hidden relative z-10">
+                <div className="mt-5 flex items-center gap-2 overflow-hidden relative z-10">
                   <div className="h-1 w-full bg-outline-variant/20 rounded-full overflow-hidden">
                     <motion.div 
                       initial={{ width: "0%" }}
@@ -250,7 +327,7 @@ export default function Home() {
               <motion.div 
                 variants={bentoVariants}
                 whileHover={{ scale: 1.05 }}
-                className="md:col-span-2 md:row-span-1 bg-surface-container-high rounded-xl p-8 border border-outline-variant/20 flex flex-col justify-between hover:border-secondary/50 transition-colors"
+                className="md:col-span-2 md:row-span-1 bg-surface-container-high rounded-xl p-6 border border-outline-variant/20 flex flex-col justify-between hover:border-secondary/50 transition-colors"
               >
                 <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary mb-4">
                   <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>security</span>
@@ -265,7 +342,7 @@ export default function Home() {
               <motion.div 
                 variants={bentoVariants}
                 whileHover={{ scale: 1.03 }}
-                className="md:col-span-3 md:row-span-1 bg-surface-container-high rounded-xl p-8 border border-outline-variant/20 flex items-center gap-6 hover:border-primary/50 transition-colors"
+                className="md:col-span-3 md:row-span-1 bg-surface-container-high rounded-xl p-6 border border-outline-variant/20 flex items-center gap-5 hover:border-primary/50 transition-colors"
               >
                 <div className="flex-1">
                   <h3 className="font-headline text-xl font-bold text-on-surface mb-2">Dynamic Portfolio</h3>
@@ -284,7 +361,7 @@ export default function Home() {
               <motion.div 
                 variants={bentoVariants}
                 whileHover={{ scale: 1.03 }}
-                className="md:col-span-3 md:row-span-1 glass-panel rounded-xl p-8 flex flex-col justify-center kinetic-gradient border border-outline-variant/30"
+                className="md:col-span-3 md:row-span-1 glass-panel rounded-xl p-6 flex flex-col justify-center kinetic-gradient border border-outline-variant/30"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <span className="material-symbols-outlined text-primary text-3xl">terminal</span>
@@ -303,18 +380,18 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-14 md:py-20 px-6 md:px-8 relative overflow-hidden">
+        <section className="py-16 md:py-24 px-6 md:px-8 relative overflow-hidden">
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="max-w-screen-xl mx-auto rounded-2xl bg-gradient-to-br from-surface-container-highest to-surface-container-lowest p-8 md:p-12 lg:p-16 border border-outline-variant/20 text-center relative z-10 overflow-hidden"
+            className="max-w-screen-lg mx-auto rounded-2xl bg-gradient-to-br from-surface-container-highest to-surface-container-lowest p-8 md:p-12 border border-outline-variant/20 text-center relative z-10 overflow-hidden"
           >
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-secondary/10 blur-[80px] rounded-full"></div>
-            <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight">Ready to Command the Terminal?</h2>
-            <p className="text-on-surface-variant text-base md:text-lg mb-10 max-w-xl mx-auto font-body">Join over 50,000 traders refining their strategies daily. Zero commitments, infinite possibilities.</p>
-            <Link href="/register" className="inline-block bg-primary text-on-primary px-10 py-4 rounded-lg font-bold font-headline text-lg hover:scale-105 transition-all shadow-xl shadow-primary/20 active:scale-95">Open Free Account</Link>
+            <h2 className="font-headline text-3xl md:text-4xl font-extrabold mb-3 tracking-tight">Ready to Command the Terminal?</h2>
+            <p className="text-on-surface-variant text-base md:text-lg mb-8 max-w-xl mx-auto font-body">Join over 50,000 traders refining their strategies daily. Zero commitments, infinite possibilities.</p>
+            <Link href="/register" className="inline-block bg-primary text-on-primary px-10 py-3.5 rounded-lg font-bold font-headline text-base hover:scale-105 transition-all shadow-xl shadow-primary/20 active:scale-95">Open Free Account</Link>
           </motion.div>
         </section>
       </main>
