@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { motion, Variants } from "framer-motion";
-import { useAuth } from "@/context/AuthContext";
+import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { containerVariants, itemVariants, bentoVariants } from "@/lib/animations";
+import { formatPrice } from "@/lib/format";
 import TrueFocus from "@/components/effects/TrueFocus";
 
 const LiquidEther = dynamic(() => import("@/components/effects/LiquidEther"), { ssr: false });
@@ -35,12 +38,6 @@ function LiveTicker() {
     return () => clearInterval(interval);
   }, []);
 
-  function formatPrice(p: number) {
-    return p >= 1 
-      ? `$${p.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-      : `$${p.toFixed(4)}`;
-  }
-
   if (coins.length === 0) {
     return <div className="mt-16 w-full h-8 bg-surface-container-lowest border-b border-outline-variant/10" />;
   }
@@ -69,54 +66,9 @@ function LiveTicker() {
 }
 
 export default function Home() {
-  const { user } = useAuth();
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15
-      }
-    }
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
-  };
-
-  const bentoVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
-  };
-
   return (
     <>
-      {/* TopNavBar */}
-      <nav className="fixed top-0 w-full z-50 bg-slate-950/60 backdrop-blur-xl shadow-[0_4px_24px_rgba(133,173,255,0.04)]">
-        <div className="flex justify-between items-center h-16 px-8 w-full max-w-screen-2xl mx-auto">
-          <div className="flex items-center gap-8">
-            <Link href="/" className="text-2xl font-black tracking-tighter text-slate-100 uppercase font-headline">COINEXA</Link>
-            <nav className="hidden md:flex gap-6 items-center">
-              <Link className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight" href="/market">Market</Link>
-              <Link className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight" href="/dashboard">Dashboard</Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            {user ? (
-              <Link href="/dashboard" className="bg-primary-container text-on-primary-container px-5 py-2 rounded-lg font-bold transition-transform active:scale-95 text-sm">Dashboard</Link>
-            ) : (
-              <>
-                <Link href="/login" className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight text-sm px-4 py-2">Login</Link>
-                <Link href="/register" className="bg-primary-container text-on-primary-container px-5 py-2 rounded-lg font-bold transition-transform active:scale-95 text-sm">Get Started</Link>
-              </>
-            )}
-          </div>
-        </div>
-        <div className="bg-gradient-to-r from-blue-500/10 to-transparent h-[1px] w-full absolute bottom-0"></div>
-      </nav>
-
-      {/* Live Ticker */}
+      <Navbar />
       <LiveTicker />
 
       <main className="relative">
@@ -360,13 +312,6 @@ export default function Home() {
                   <h3 className="font-headline text-xl font-bold text-on-surface mb-2">Dynamic Portfolio</h3>
                   <p className="text-on-surface-variant text-sm">Automated tracking of your simulated performance across all assets. Visualized via heatmaps and risk-adjusted metrics.</p>
                 </div>
-                <div className="hidden sm:block w-32 h-32 opacity-60">
-                  <img 
-                    alt="Performance graph" 
-                    className="w-full h-full object-cover rounded-lg" 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDh6-PVXxFLHO50wUNLJTryZzNGexgT_HSPxhc2RdQQAks1Aa538NzMdW32crJupxOvfjL52JVm0e0JmYStGcToq7Ebz-sDV3t9UFtaFIWYrUxu_YYduzNyk6a3HQzXRPPp01GbQX72Mtt3x6fAGb9pi1uNzh5RGSujAU4Sh3H36_j1GpCo8lN7WansIUtAtMYbhvXxH35yfpjFSdgTgd0dIhcnKajr94AwyvNbW6kJs0asGgCSifnG-D-nA36Lro-m1OirbZIxEdA"
-                  />
-                </div>
               </motion.div>
 
               {/* Small Feature: Terminal Mode */}
@@ -408,22 +353,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="w-full py-5 border-t border-slate-800/30 bg-black">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 px-6 md:px-8 w-full max-w-screen-2xl mx-auto">
-          <div className="text-sm font-bold text-slate-500 font-['Inter']">COINEXA TERMINAL</div>
-          <div className="flex gap-6">
-            <a className="text-slate-600 hover:text-slate-300 font-['Inter'] text-[10px] uppercase tracking-widest transition-colors" href="#">Terms</a>
-            <a className="text-slate-600 hover:text-slate-300 font-['Inter'] text-[10px] uppercase tracking-widest transition-colors" href="#">Privacy</a>
-            <a className="text-slate-600 hover:text-slate-300 font-['Inter'] text-[10px] uppercase tracking-widest transition-colors" href="#">API Docs</a>
-            <a className="text-slate-600 hover:text-slate-300 font-['Inter'] text-[10px] uppercase tracking-widest transition-colors" href="#">Support</a>
-          </div>
-          <div className="text-emerald-400 font-['Inter'] text-[10px] uppercase tracking-widest flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
-            © 2024 COINEXA TERMINAL. MARKET STATUS: OPERATIONAL
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }

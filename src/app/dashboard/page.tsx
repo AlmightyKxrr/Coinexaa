@@ -2,27 +2,32 @@
 
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
-import { motion, Variants } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
 import { useCoinGecko } from "@/hooks/useCoinGecko";
 import { executeBuy, executeSell, TRADING_FEE_RATE } from "@/lib/tradeService";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { formatUSD } from "@/lib/format";
+import { containerVariants, itemVariants, slideRightVariants, slideLeftVariants } from "@/lib/animations";
 import type { Transaction } from "@/types";
-
-// ─── Helpers ───────────────────────────────────────────────────────────────────
-
-function formatUSD(n: number): string {
-  return n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 });
-}
 
 // ─── Component ─────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
+  const router = useRouter();
   // ── Auth state (from global context) ───────────────────────────────────────
-  const { user, signOut } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const userId = user?.id ?? null;
+
+  // ── Redirect unauthenticated users ─────────────────────────────────────────
+  useEffect(() => {
+    if (!authLoading && !user) router.push("/login");
+  }, [user, authLoading, router]);
 
   // ── Zustand store ─────────────────────────────────────────────────────────
   const { usdBalance, assets, livePrices, totalNetAssetValue, isLoading: portfolioLoading, fetchUserPortfolio } = usePortfolioStore();
@@ -141,20 +146,25 @@ export default function DashboardPage() {
     return { unrealizedPnL, realizedPnL, totalPnL, totalPnLPct, holdingsValue, totalCostBasis };
   }, [transactions, assets, livePrices, totalNetAssetValue, usdBalance]);
 
+  // ── Fetch all transactions (shared helper to avoid limit inconsistency) ───
+  async function fetchAllTransactions(uid: string) {
+    const { data: txns } = await supabase
+      .from("transactions")
+      .select("*")
+      .eq("user_id", uid)
+      .order("created_at", { ascending: false });
+    if (txns) setTransactions(txns as Transaction[]);
+  }
+
   // ── Auth check + initial fetch ────────────────────────────────────────────
   useEffect(() => {
     async function init() {
       if (!userId) return;
       await fetchUserPortfolio(userId);
-      // Fetch ALL transactions (needed for P&L calculation)
-      const { data: txns } = await supabase
-        .from("transactions")
-        .select("*")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false });
-      if (txns) setTransactions(txns as Transaction[]);
+      await fetchAllTransactions(userId);
     }
     init();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, fetchUserPortfolio]);
 
   // ── Trade execution handler ───────────────────────────────────────────────
@@ -183,14 +193,8 @@ export default function DashboardPage() {
       }
       setTradeAmount("");
 
-      // Refresh transactions
-      const { data: txns } = await supabase
-        .from("transactions")
-        .select("*")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false })
-        .limit(10);
-      if (txns) setTransactions(txns as Transaction[]);
+      // Refresh transactions (fetch all — needed for P&L accuracy)
+      await fetchAllTransactions(userId);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Trade execution failed.";
       toast.error(message);
@@ -199,23 +203,7 @@ export default function DashboardPage() {
     }
   }
 
-  // ── Animation variants ────────────────────────────────────────────────────
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.15 } },
-  };
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } },
-  };
-  const slideRightVariants: Variants = {
-    hidden: { opacity: 0, x: -30 },
-    show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 200, damping: 20 } },
-  };
-  const slideLeftVariants: Variants = {
-    hidden: { opacity: 0, x: 30 },
-    show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 200, damping: 20 } },
-  };
+  // Animation variants imported from @/lib/animations
 
   // ── NAV display ───────────────────────────────────────────────────────────
   const navWhole = Math.floor(totalNetAssetValue).toLocaleString("en-US");
@@ -224,32 +212,7 @@ export default function DashboardPage() {
   // ── Rendering ─────────────────────────────────────────────────────────────
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 bg-slate-950/60 backdrop-blur-xl shadow-[0_4px_24px_rgba(133,173,255,0.04)]">
-        <div className="flex justify-between items-center h-16 px-8 w-full max-w-screen-2xl mx-auto">
-          <div className="flex items-center gap-8">
-            <Link href="/" className="text-2xl font-black tracking-tighter text-slate-100 uppercase font-headline">COINEXA</Link>
-            <nav className="hidden md:flex gap-6 items-center">
-              <Link className="text-slate-400 hover:text-slate-200 transition-colors font-headline tracking-tight" href="/market">Market</Link>
-              <Link className="text-blue-400 font-bold border-b-2 border-blue-400 pb-1 font-headline tracking-tight" href="/dashboard">Dashboard</Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            {userId ? (
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-on-surface-variant font-label uppercase tracking-widest">Balance:</span>
-                <span className="text-sm font-bold text-secondary">{formatUSD(usdBalance)}</span>
-                <button onClick={signOut} className="ml-2 text-xs text-slate-400 hover:text-error transition-colors uppercase tracking-widest font-label">Logout</button>
-              </div>
-            ) : (
-              <>
-                <Link href="/login" className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors active:scale-95">Login</Link>
-                <Link href="/register" className="px-6 py-2 bg-primary text-on-primary-container font-bold rounded-lg hover:bg-primary-fixed transition-all active:scale-95">Get Started</Link>
-              </>
-            )}
-          </div>
-        </div>
-        <div className="bg-gradient-to-r from-blue-500/10 to-transparent h-[1px] w-full absolute bottom-0"></div>
-      </nav>
+      <Navbar />
 
       <main className="pt-24 pb-12 px-8 max-w-screen-2xl mx-auto space-y-6 flex-grow w-full overflow-hidden">
         <motion.section
@@ -261,7 +224,7 @@ export default function DashboardPage() {
 
           {/* ── Total Net Asset Value ────────────────────────────────────── */}
           <motion.div variants={itemVariants} className="lg:col-span-12 glass-panel rounded-xl kinetic-gradient p-12 text-center flex flex-col items-center justify-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuA4xhzbo6GhTKpUj715OwmRTWb1SxsJNqfHd62cDP1JhIHdfV8_NscRzVUAI5RhDkmBQAm3r7ZCX1fI7Y2qsKjqCJZv8Ow5XebF8Tmw69j-G_2aPIUSGIENspu2zciTzOLVDU3pi3Y3JQR-bQ_Y8Tl9PQewbuv09ARyJrrIKdg1ZNL_kxcJb5kInhROccjDDSqdB0U8cgkynpN53aTpFDxGRZi2NoWMJZM0v_0F6JUnkL5ahBntVibkETMHvW6nCz9CLMxcItny9Dg')", backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+            <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none bg-gradient-to-br from-primary/30 via-transparent to-secondary/20"></div>
             <span className="text-on-surface-variant font-label text-xs uppercase tracking-[0.2em] mb-4">Total Net Asset Value</span>
             {userId ? (
               <h1 className="font-headline text-6xl md:text-8xl font-extrabold tracking-tighter text-on-surface mb-4">
@@ -580,11 +543,10 @@ export default function DashboardPage() {
           <motion.div variants={itemVariants} className="lg:col-span-12">
             <div className="bg-surface-container-high rounded-xl overflow-hidden border border-outline-variant/10">
               <div className="px-6 py-4 bg-surface-bright flex justify-between items-center">
-                <h2 className="font-headline font-bold tracking-tight">Recent Execution History</h2>
-                <div className="flex gap-4">
-                  <button className="text-[10px] uppercase tracking-widest font-label text-primary font-bold">Export CSV</button>
-                  <button className="text-[10px] uppercase tracking-widest font-label text-on-surface-variant">View All</button>
-                </div>
+                <h2 className="font-headline font-bold tracking-tight">Execution History</h2>
+                <span className="text-[10px] uppercase tracking-widest font-label text-on-surface-variant">
+                  {transactions.length} {transactions.length === 1 ? "trade" : "trades"}
+                </span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
@@ -639,21 +601,7 @@ export default function DashboardPage() {
         </motion.section>
       </main>
 
-      <footer className="w-full py-4 border-t border-slate-800/30 bg-black mt-auto">
-        <div className="flex justify-between items-center px-8 w-full max-w-screen-2xl mx-auto">
-          <div className="text-sm font-bold text-slate-500 font-['Inter'] uppercase">COINEXA TERMINAL</div>
-          <div className="flex gap-6">
-            <a className="text-slate-600 hover:text-slate-300 transition-colors text-[10px] uppercase tracking-widest font-['Inter']" href="#">Terms</a>
-            <a className="text-slate-600 hover:text-slate-300 transition-colors text-[10px] uppercase tracking-widest font-['Inter']" href="#">Privacy</a>
-            <a className="text-slate-600 hover:text-slate-300 transition-colors text-[10px] uppercase tracking-widest font-['Inter']" href="#">API Docs</a>
-            <a className="text-slate-600 hover:text-slate-300 transition-colors text-[10px] uppercase tracking-widest font-['Inter']" href="#">Support</a>
-          </div>
-          <div className="text-emerald-400 text-[10px] uppercase tracking-widest font-['Inter'] flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
-            © 2024 COINEXA TERMINAL. MARKET STATUS: OPERATIONAL
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }

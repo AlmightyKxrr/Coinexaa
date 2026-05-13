@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
+import { formatUSD } from "@/lib/format";
 
 // ─── Trade Execution Service ───────────────────────────────────────────────────
 
@@ -143,14 +144,23 @@ export async function executeSell({ userId, assetSymbol, amount, currentPrice }:
   }
 
   // ── 3. Credit balance (proceeds minus fee) ────────────────────────────────
-  const { usdBalance } = usePortfolioStore.getState();
-  const newBalance = usdBalance + totalProceeds;
+  const { error: balanceError } = await supabase.rpc("credit_balance", {
+    p_user_id: userId,
+    p_amount: totalProceeds,
+  });
 
-  const { error: balanceError } = await supabase
-    .from("profiles")
-    .update({ virtual_balance: newBalance })
-    .eq("id", userId);
-  if (balanceError) throw balanceError;
+  // Fallback if the RPC doesn't exist: use a direct update
+  if (balanceError?.message?.includes("function") || balanceError?.code === "42883") {
+    const { usdBalance } = usePortfolioStore.getState();
+    const newBalance = usdBalance + totalProceeds;
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ virtual_balance: newBalance })
+      .eq("id", userId);
+    if (updateError) throw updateError;
+  } else if (balanceError) {
+    throw balanceError;
+  }
 
   // ── 4. Record transaction ─────────────────────────────────────────────────
   const { error: txError } = await supabase.from("transactions").insert({
@@ -168,10 +178,4 @@ export async function executeSell({ userId, assetSymbol, amount, currentPrice }:
   await usePortfolioStore.getState().fetchUserPortfolio(userId);
 
   return { fee };
-}
-
-// ─── Helper ─────────────────────────────────────────────────────────────────────
-
-function formatUSD(n: number): string {
-  return n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 });
 }
